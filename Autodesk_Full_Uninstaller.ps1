@@ -17,11 +17,11 @@ if (-not $IsAdmin) {
 
 
 class Uninstaller {
-    [void]deleteprogfiles {
+    [void]deleteprogfiles() {
         $this.Logs("Checking for any Autodesk files and directories in ProgramFiles")
         $checkx64 = [bool](Get-ChildItem -Path $env:ProgramFiles -Filter "*Autodesk*" -Recurse -Directory -ErrorAction SilentlyContinue)
         $this.Logs("Checking for any Autodesk files and directories in ProgramFiles(x86)")
-        $checkx86 = [bool](Get-ChildItem -Path $env:ProgramFiles{x86} -Filter "*Autodesk*" -Recurse -Directory -ErrorAction SilentlyContinue)
+        $checkx86 = [bool](Get-ChildItem -Path ${env:ProgramFiles(x86)} -Filter "*Autodesk*" -Recurse -Directory -ErrorAction SilentlyContinue)
         $this.Logs("Checking for any Autodesk files and directories in ProgramData")
         $checkdata = [bool](Get-ChildItem -Path $env:ProgramData -Filter "*Autodesk*" -Recurse -Directory -ErrorAction SilentlyContinue)
         $this.Logs("Results - Program Files check = $checkx64, Program Files(x86) check = $checkx86, ProgramData check = $checkdata")
@@ -52,9 +52,9 @@ class Uninstaller {
         $this.deleteroot()
     }
 
-    [void]deleteroot {
+    [void]deleteroot() {
         $this.Logs("Checking for Autodesk files and directories in root of drive.")
-        $checkdata = [bool](Get-ChildItem -Path $env:SystemDrive -Filter "*Autodesk*" -Recurse -Directory -ErrorAction SilentlyContinue)
+        $checkroot = [bool](Get-ChildItem -Path $env:SystemDrive -Filter "*Autodesk*" -Recurse -Directory -ErrorAction SilentlyContinue)
         if ($checkroot) {
             Remove-Item -Path "$env:SystemDrive\*Autodesk*" -Force -Include *.* -Recurse -ErrorAction SilentlyContinue -Verbose
             $this.Logs("Finished removing Autodesk files and directories from root of system drive.")
@@ -62,7 +62,7 @@ class Uninstaller {
         $this.deleteHKEY()
     }
 
-    [void]deleteHKEY {
+    [void]deleteHKEY() {
         $this.Logs("Checking for Autodesk HKeys in HKLM.")
         $checkHKLM = [bool](Get-ChildItem -Path HKLM:\SOFTWARE\*Autodesk* -Recurse -ErrorAction SilentlyContinue)
         if ($checkHKLM) {
@@ -117,7 +117,7 @@ class Uninstaller {
     }
 
     [void]Logs([string]$message) {
-        $locDir = "$env:TEMP\Uninstall"
+        $logDir = "$env:TEMP\Uninstall"
         if (-not (Test-Path $logDir)) {
             New-Item -Path $logDir -ItemType Directory -Force | Out-Null
         }
