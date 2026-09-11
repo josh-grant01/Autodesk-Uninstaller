@@ -17,19 +17,7 @@ if (-not $IsAdmin) {
 
 
 class Uninstaller {
-    param{
-        [bool]$checkx64
-        [bool]$checkx86
-        [bool]$checkdata
-        [bool]$checkroot
-        [bool]$checkHKLM
-        [bool]$checkHKCU
-        [bool]$checkHKU
-        [bool]$checklocaluser
-        [bool]$checkroamuser
-    }
-
-    function deleteprogfiles {
+    [void]deleteprogfiles {
         $this.Logs("Checking for any Autodesk files and directories in ProgramFiles")
         $checkx64 = [bool](Get-ChildItem -Path $env:ProgramFiles -Filter "*Autodesk*" -Recurse -Directory -ErrorAction SilentlyContinue)
         $this.Logs("Checking for any Autodesk files and directories in ProgramFiles(x86)")
@@ -64,7 +52,7 @@ class Uninstaller {
         $this.deleteroot()
     }
 
-    function deleteroot {
+    [void]deleteroot {
         $this.Logs("Checking for Autodesk files and directories in root of drive.")
         $checkdata = [bool](Get-ChildItem -Path $env:SystemDrive -Filter "*Autodesk*" -Recurse -Directory -ErrorAction SilentlyContinue)
         if ($checkroot) {
@@ -74,7 +62,7 @@ class Uninstaller {
         $this.deleteHKEY()
     }
 
-    function deleteHKEY {
+    [void]deleteHKEY {
         $this.Logs("Checking for Autodesk HKeys in HKLM.")
         $checkHKLM = [bool](Get-ChildItem -Path HKLM:\SOFTWARE\*Autodesk* -Recurse -ErrorAction SilentlyContinue)
         if ($checkHKLM) {
